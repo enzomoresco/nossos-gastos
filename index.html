@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nossos Gastos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4ede4; --card:#fffdf9; --ink:#2b2420; --ink-soft:#7a6f64;
+  --terra:#c0654a; --terra-deep:#9e4f38; --sage:#6f8466; --gold:#d4a24e;
+  --line:#e6dccd; --shadow:0 1px 2px rgba(43,36,32,.04),0 8px 24px rgba(43,36,32,.06);
+  --enzo:#c0654a; --karyn:#6f8466;
+  --r:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--ink);font-family:'Hanken Grotesk',sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body{padding-bottom:96px;max-width:540px;margin:0 auto;position:relative;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:
+  radial-gradient(1200px 600px at 100% -10%, rgba(212,162,78,.10), transparent 60%),
+  radial-gradient(900px 500px at -10% 20%, rgba(111,132,102,.08), transparent 55%),
+  var(--bg)}
+
+/* ---------- LOGIN ---------- */
+#login{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center}
+#login .heart{font-size:46px;margin-bottom:14px;animation:beat 2.4s ease-in-out infinite}
+@keyframes beat{0%,100%{transform:scale(1)}10%{transform:scale(1.12)}20%{transform:scale(1)}30%{transform:scale(1.1)}}
+#login h1{font-family:'Fraunces',serif;font-weight:600;font-size:32px;letter-spacing:-.02em;margin-bottom:6px}
+#login p{color:var(--ink-soft);margin-bottom:28px;font-size:15px}
+.pwd-wrap{width:100%;max-width:300px}
+#pwd{width:100%;padding:15px 18px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);font-size:17px;font-family:inherit;text-align:center;letter-spacing:.04em;outline:none;transition:border-color .2s}
+#pwd:focus{border-color:var(--terra)}
+.pwd-wrap button{width:100%;margin-top:12px;padding:15px;border:none;border-radius:14px;background:var(--terra);color:#fff;font-size:16px;font-weight:600;font-family:inherit;cursor:pointer;transition:background .2s}
+.pwd-wrap button:active{background:var(--terra-deep)}
+#login .err{color:var(--terra);font-size:13px;margin-top:12px;height:16px;opacity:0;transition:opacity .2s}
+
+/* ---------- HEADER ---------- */
+header{padding:26px 22px 14px}
+header .greet{color:var(--ink-soft);font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+header h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;letter-spacing:-.02em;margin-top:2px}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;color:var(--ink-soft);background:var(--card);border:1px solid var(--line);padding:4px 10px;border-radius:99px}
+.sync-pill .dot{width:7px;height:7px;border-radius:99px;background:var(--sage)}
+.sync-pill.off .dot{background:var(--gold)}
+.sync-pill.err .dot{background:var(--terra)}
+
+/* ---------- BALANCE HERO ---------- */
+.hero{margin:8px 16px 20px;background:linear-gradient(150deg,#2b2420,#3d342d);color:#fff;border-radius:24px;padding:26px 24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:99px;background:radial-gradient(circle,rgba(212,162,78,.35),transparent 70%)}
+.hero .label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.7}
+.hero .who{font-family:'Fraunces',serif;font-size:21px;margin-top:10px;font-weight:500;line-height:1.3}
+.hero .amount{font-family:'Fraunces',serif;font-size:44px;font-weight:600;letter-spacing:-.02em;margin-top:4px}
+.hero .who b{color:var(--gold)}
+.hero.settled .who{font-size:24px}
+.settle-btn{margin-top:18px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:11px 16px;border-radius:12px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;backdrop-filter:blur(4px);transition:background .2s}
+.settle-btn:active{background:rgba(255,255,255,.22)}
+
+/* ---------- SECTION ---------- */
+.section-title{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin:24px 22px 12px;letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between}
+.section-title span.sub{font-family:'Hanken Grotesk';font-size:12px;color:var(--ink-soft);font-weight:600}
+
+/* ---------- STAT CARDS ---------- */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 16px 14px;box-shadow:var(--shadow)}
+.stat .k{font-size:12px;color:var(--ink-soft);font-weight:600;letter-spacing:.03em}
+.stat .v{font-family:'Fraunces',serif;font-size:24px;font-weight:600;margin-top:4px;letter-spacing:-.01em}
+.stat .v.sm{font-size:19px}
+
+/* ---------- SPLIT BAR ---------- */
+.splitcard{margin:0 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+.splitbar{height:14px;border-radius:99px;overflow:hidden;display:flex;margin:10px 0 8px;background:var(--line)}
+.splitbar .e{background:var(--enzo)}
+.splitbar .k{background:var(--karyn)}
+.splitleg{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-soft)}
+.splitleg b{color:var(--ink)}
+.legdot{display:inline-block;width:9px;height:9px;border-radius:99px;vertical-align:middle;margin-right:5px}
+
+/* ---------- CATEGORY LIST ---------- */
+.cats{padding:0 16px;display:flex;flex-direction:column;gap:8px}
+.catrow{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+.catrow .emoji{font-size:22px;width:30px;text-align:center}
+.catrow .nm{flex:1;font-weight:600;font-size:14px}
+.catrow .ct{font-size:12px;color:var(--ink-soft)}
+.catrow .vl{font-family:'Fraunces',serif;font-weight:600;font-size:16px}
+.catrow .barwrap{height:5px;background:var(--line);border-radius:99px;margin-top:5px;overflow:hidden}
+.catrow .bar{height:100%;background:var(--terra);border-radius:99px}
+
+/* ---------- ENTRIES ---------- */
+.entries{padding:0 16px;display:flex;flex-direction:column;gap:1px}
+.daygroup{margin-bottom:8px}
+.daylabel{font-size:12px;font-weight:700;color:var(--ink-soft);letter-spacing:.04em;text-transform:uppercase;margin:14px 6px 8px}
+.entry{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;display:flex;align-items:center;gap:12px;margin-bottom:8px;box-shadow:var(--shadow);position:relative}
+.entry .em{font-size:20px;width:26px;text-align:center;flex-shrink:0}
+.entry .mid{flex:1;min-width:0}
+.entry .obs{font-weight:600;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.entry .meta{font-size:12px;color:var(--ink-soft);margin-top:1px}
+.entry .right{text-align:right;flex-shrink:0}
+.entry .amt{font-family:'Fraunces',serif;font-weight:600;font-size:16px}
+.entry .tag{font-size:10px;font-weight:700;letter-spacing:.03em;padding:2px 7px;border-radius:99px;margin-top:3px;display:inline-block}
+.tag.div{background:rgba(192,101,74,.12);color:var(--terra-deep)}
+.tag.acert{background:rgba(122,111,100,.12);color:var(--ink-soft)}
+.tag.presente{background:rgba(212,162,78,.18);color:#9a7220}
+.entry .del{position:absolute;right:-4px;top:-4px;display:none}
+.entry.pending-del{opacity:.4}
+
+/* ---------- FAB + BOTTOM NAV ---------- */
+.fab{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:40;background:var(--terra);color:#fff;border:none;border-radius:99px;padding:15px 26px;font-family:inherit;font-size:16px;font-weight:700;box-shadow:0 8px 24px rgba(192,101,74,.4);cursor:pointer;display:flex;align-items:center;gap:8px;transition:transform .15s,background .2s}
+.fab:active{transform:translateX(-50%) scale(.96);background:var(--terra-deep)}
+.fab .plus{font-size:20px;line-height:1}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;z-index:60;background:rgba(43,36,32,.4);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
+.modal.open{display:flex;animation:fade .2s}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.sheet{background:var(--bg);width:100%;max-width:540px;border-radius:26px 26px 0 0;padding:8px 20px 28px;max-height:92vh;overflow-y:auto;animation:slideup .28s cubic-bezier(.2,.8,.2,1)}
+@keyframes slideup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.grab{width:42px;height:5px;background:var(--line);border-radius:99px;margin:8px auto 18px}
+.sheet h2{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin-bottom:18px}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.02em}
+.field input,.field textarea{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:var(--card);font-size:16px;font-family:inherit;color:var(--ink);outline:none;transition:border-color .2s}
+.field input:focus,.field textarea:focus{border-color:var(--terra)}
+.field textarea{resize:none;min-height:46px}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.catpick{background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;font-size:11px;font-weight:600;color:var(--ink-soft);transition:all .15s;line-height:1.2}
+.catpick .e{font-size:22px;display:block;margin-bottom:3px}
+.catpick.sel{border-color:var(--terra);background:rgba(192,101,74,.08);color:var(--terra-deep)}
+.seg{display:flex;gap:7px;flex-wrap:wrap}
+.seg button{flex:1;min-width:64px;padding:11px 6px;border:1.5px solid var(--line);border-radius:11px;background:var(--card);font-family:inherit;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all .15s}
+.seg button.sel{border-color:var(--terra);background:var(--terra);color:#fff}
+.custom-split{display:none;margin-top:10px;align-items:center;gap:10px}
+.custom-split.show{display:flex}
+.custom-split input{width:70px;text-align:center}
+.custom-split .lab{font-size:13px;color:var(--ink-soft);font-weight:600}
+.save-btn{width:100%;margin-top:8px;padding:16px;border:none;border-radius:14px;background:var(--terra);color:#fff;font-family:inherit;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s}
+.save-btn:active{background:var(--terra-deep)}
+.save-btn:disabled{opacity:.5}
+.splitpreview{font-size:13px;color:var(--ink-soft);margin-top:8px;text-align:center}
+.splitpreview b{color:var(--ink)}
+
+/* tabs */
+.tabs{display:flex;gap:6px;padding:4px;margin:0 16px 16px;background:var(--card);border:1px solid var(--line);border-radius:14px}
+.tabs button{flex:1;padding:10px;border:none;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--ink-soft);border-radius:10px;cursor:pointer;transition:all .2s}
+.tabs button.sel{background:var(--ink);color:#fff}
+.view{display:none}
+.view.show{display:block}
+.empty{text-align:center;color:var(--ink-soft);padding:40px 20px;font-size:14px}
+
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:99px;font-size:14px;font-weight:600;z-index:80;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.swipe-hint{font-size:11px;color:var(--ink-soft);text-align:center;margin:6px 0}
+.del-x{background:none;border:none;color:var(--terra);font-size:13px;font-weight:700;cursor:pointer;padding:4px 8px;border-radius:8px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="heart">❤️</div>
+  <h1>Nossos Gastos</h1>
+  <p>Enzo &amp; Karyn</p>
+  <div class="pwd-wrap">
+    <input id="pwd" type="password" inputmode="numeric" placeholder="Senha" autocomplete="off">
+    <button onclick="tryLogin()">Entrar</button>
+    <div class="err" id="loginErr">Senha incorreta</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <header>
+    <div class="greet" id="greet">Olá</div>
+    <h1>Nossos Gastos</h1>
+    <span class="sync-pill" id="syncPill"><span class="dot"></span><span id="syncTxt">Conectando…</span></span>
+  </header>
+
+  <!-- BALANCE -->
+  <div class="hero" id="hero">
+    <div class="label">Acerto de contas</div>
+    <div class="who" id="heroWho">Calculando…</div>
+    <div class="amount" id="heroAmt"></div>
+    <button class="settle-btn" id="settleBtn" onclick="settleUp()" style="display:none">✓ Marcar como pago / zerar</button>
+  </div>
+
+  <div class="tabs">
+    <button class="sel" onclick="switchTab('resumo',this)">Resumo</button>
+    <button onclick="switchTab('lancamentos',this)">Lançamentos</button>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="view show" id="view-resumo">
+    <div class="stats">
+      <div class="stat"><div class="k">Total este mês</div><div class="v" id="stMonth">—</div></div>
+      <div class="stat"><div class="k">Total geral</div><div class="v" id="stTotal">—</div></div>
+      <div class="stat"><div class="k">Cota do Enzo</div><div class="v sm" id="stEnzo">—</div></div>
+      <div class="stat"><div class="k">Cota da Karyn</div><div class="v sm" id="stKaryn">—</div></div>
+    </div>
+
+    <div class="section-title">Quem gastou quanto <span class="sub">total acumulado</span></div>
+    <div class="splitcard">
+      <div class="splitbar"><div class="e" id="sbE"></div><div class="k" id="sbK"></div></div>
+      <div class="splitleg">
+        <span><span class="legdot" style="background:var(--enzo)"></span>Enzo <b id="sbET">—</b></span>
+        <span>Karyn <b id="sbKT">—</b><span class="legdot" style="background:var(--karyn);margin-left:5px;margin-right:0"></span></span>
+      </div>
+    </div>
+
+    <div class="section-title">Por categoria <span class="sub" id="catPeriod">total</span></div>
+    <div class="cats" id="cats"></div>
+  </div>
+
+  <!-- LANCAMENTOS -->
+  <div class="view" id="view-lancamentos">
+    <div class="entries" id="entries"></div>
+  </div>
+</div>
+
+<!-- FAB -->
+<button class="fab" id="fab" onclick="openModal()" style="display:none"><span class="plus">+</span> Lançar gasto</button>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="sheet">
+    <div class="grab"></div>
+    <h2>Novo gasto</h2>
+    <div class="field">
+      <label>Valor (R$)</label>
+      <input id="fValor" type="number" inputmode="decimal" placeholder="0,00" step="0.01">
+    </div>
+    <div class="field">
+      <label>Data</label>
+      <input id="fData" type="date">
+    </div>
+    <div class="field">
+      <label>Categoria</label>
+      <div class="catgrid" id="catGrid"></div>
+    </div>
+    <div class="field">
+      <label>Observação</label>
+      <input id="fObs" type="text" placeholder="Ex: Jantar no Wolfs">
+    </div>
+    <div class="field">
+      <label>Quem pagou?</label>
+      <div class="seg" id="segPagou">
+        <button data-v="Enzo" class="sel">Enzo pagou</button>
+        <button data-v="Karyn">Karyn pagou</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Como dividir?</label>
+      <div class="seg" id="segSplit">
+        <button data-e="60" class="sel">60/40</button>
+        <button data-e="50">50/50</button>
+        <button data-e="100">Só Enzo</button>
+        <button data-e="0">Só Karyn</button>
+        <button data-e="custom">Outro</button>
+      </div>
+      <div class="custom-split" id="customSplit">
+        <span class="lab">Enzo</span>
+        <input id="fCustomE" type="number" inputmode="numeric" value="60" min="0" max="100">
+        <span class="lab">% → Karyn <b id="customKlab">40</b>%</span>
+      </div>
+      <div class="splitpreview" id="splitPreview"></div>
+    </div>
+    <button class="save-btn" id="saveBtn" onclick="saveEntry()">Salvar gasto</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ====== CONFIGURAÇÃO — VOCÊ EDITA AQUI ====== */
+const CONFIG = {
+  // Cole aqui o link do seu robô (Apps Script). Veja o GUIA, passo 4.
+  API_URL: "https://script.google.com/macros/s/AKfycbzWhEnQ4kKw5wgW-7inoV0Q4P7WhxpKqRx842qfrNfAUj6gDLIVmdqYqAcq55cKpyjhFA/exec",
+  // Senha compartilhada. Troquem por algo de vocês.
+  SENHA: "14022020"
+};
+/* ============================================ */
+</script>
+<script src="app.js"></script>
+</body>
+</html>
